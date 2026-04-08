@@ -44,6 +44,29 @@ const storyCards = [
   },
 ];
 
+const valueCards = [
+  {
+    eyebrow: "Stratus solves execution",
+    title: "Local execution and compatibility for real AWS-shaped workflows.",
+    points: [
+      "Run AWS-shaped infrastructure locally",
+      "Use real tooling like AWS CLI, SDKs, and CDK",
+      "Get fast feedback without deploying to AWS",
+      "Reproduce failures in a deterministic environment",
+    ],
+  },
+  {
+    eyebrow: "Preflight solves trust",
+    title: "External verification before you decide the stack is ready.",
+    points: [
+      "Prove the stack actually works, not just that resources were created",
+      "Validate structure, wiring, IAM, and behavior from the outside",
+      "Add optional AI-assisted diagnosis when something fails",
+      "Catch compatibility regressions before cloud deployment",
+    ],
+  },
+];
+
 const workflow = [
   {
     step: "01",
@@ -132,10 +155,8 @@ export default function Home() {
             Verify externally.
           </h1>
           <p className="hero-text">
-            Stratus is the emulator. Preflight is the black-box validator.
-            Together they give you a compatibility-focused local AWS workflow
-            shaped around SDKs, CDK, deterministic tests, and understandable
-            failure modes.
+            Stratus emulates your AWS stack locally. Preflight verifies that it
+            actually works before you deploy.
           </p>
 
           <div className="hero-actions">
@@ -178,6 +199,31 @@ export default function Home() {
             </div>
           </div>
         </aside>
+      </section>
+
+      <section className="positioning-section">
+        <div className="section-heading">
+          <p className="eyebrow">What this is</p>
+          <h2>Stratus and Preflight give developers a credible local AWS delivery loop.</h2>
+          <p className="section-copy">
+            One product gives you fast local execution and compatibility. The
+            other gives you external proof that the path really works.
+          </p>
+        </div>
+
+        <div className="positioning-grid">
+          {valueCards.map((card) => (
+            <article className="positioning-card" key={card.title}>
+              <p className="eyebrow">{card.eyebrow}</p>
+              <h3>{card.title}</h3>
+              <ul>
+                {card.points.map((point) => (
+                  <li key={point}>{point}</li>
+                ))}
+              </ul>
+            </article>
+          ))}
+        </div>
       </section>
 
       <section className="proof-strip" aria-label="Highlights">
