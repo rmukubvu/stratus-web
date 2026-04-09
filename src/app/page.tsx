@@ -22,12 +22,39 @@ const proofPoints = [
   {
     label: "CLI / SDK / CDK",
     value: "real client compatibility",
-    detail: "AWS CLI, Java SDK smoke, CDK deploys, and emulator-targeted validation.",
+    detail: "AWS CLI, Java SDK smoke, CDK deploys, Preflight validation, and a release gate.",
   },
   {
     label: "1 binary",
     value: "operationally simple",
     detail: "Core control plane boots locally with one data dir and optional Docker for Lambda.",
+  },
+];
+
+const validatedLoop = [
+  {
+    step: "01",
+    title: "Java SDK over the network",
+    body: "A real AWS SDK for Java v2 fixture talks to Stratus through STS, DynamoDB, SQS, and S3 instead of through mocks.",
+    meta: "client compatibility",
+  },
+  {
+    step: "02",
+    title: "CDK deploy into the emulator",
+    body: "A bootstrapless CDK fixture deploys a live local path through CloudFormation into API Gateway, Lambda, SQS, and DynamoDB.",
+    meta: "deploy realism",
+  },
+  {
+    step: "03",
+    title: "Preflight checks the real path",
+    body: "Preflight lints readiness, then validates structural, wiring, IAM, and behavioural assertions against the deployed stack.",
+    meta: "external verification",
+  },
+  {
+    step: "04",
+    title: "Release gate runs the loop together",
+    body: "The release gate chains the Java SDK smoke and the external Preflight CDK smoke before changes should be trusted.",
+    meta: "proof, not promises",
   },
 ];
 
@@ -110,6 +137,11 @@ const examples = [
     title: "Preflight gate",
     body: "Use the external validator to assert structural, wiring, IAM, and behavioural guarantees, then layer in optional AI-assisted diagnosis to speed up failure analysis.",
     meta: "Black-box validation + diagnosis",
+  },
+  {
+    title: "Release gate",
+    body: "The release gate runs the Java SDK smoke and the external Preflight CDK smoke together so compatibility is continuously re-proven.",
+    meta: "CI-ready proof loop",
   },
 ];
 
@@ -285,6 +317,10 @@ export default function Home() {
         <div className="section-heading">
           <p className="eyebrow">Proof paths</p>
           <h2>Real tooling, not emulator theater.</h2>
+          <p className="section-copy">
+            The product claim is backed by one explicit loop: Java SDK, CDK,
+            Preflight, then the release gate that runs them together.
+          </p>
         </div>
 
         <div className="examples-grid">
@@ -293,6 +329,24 @@ export default function Home() {
               <span>{example.meta}</span>
               <h3>{example.title}</h3>
               <p>{example.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="workflow-section">
+        <div className="section-heading">
+          <p className="eyebrow">Validated loop</p>
+          <h2>The same stack gets pressure from multiple directions.</h2>
+        </div>
+
+        <div className="workflow-grid">
+          {validatedLoop.map((item) => (
+            <article className="workflow-card" key={item.step + item.title}>
+              <span className="workflow-step">{item.step}</span>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+              <span>{item.meta}</span>
             </article>
           ))}
         </div>
