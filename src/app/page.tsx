@@ -170,6 +170,7 @@ export default function Home() {
 
         <nav className="topnav" aria-label="Primary">
           <a href="#platform">Platform</a>
+          <a href="/preflight">Preflight</a>
           <a href="#workflows">Workflows</a>
           <a href="#proof">Proof</a>
           <a href="#repos">Repos</a>
