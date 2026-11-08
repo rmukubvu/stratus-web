@@ -1,392 +1,432 @@
-const serviceFamilies = [
-  "STS",
-  "S3",
-  "Lambda",
-  "DynamoDB",
-  "SQS",
-  "IAM",
-  "CloudFormation",
-  "API Gateway",
-  "EventBridge",
-  "Step Functions",
-  "Kinesis",
-  "Secrets Manager",
-];
-
-const proofPoints = [
-  {
-    label: "26",
-    value: "service families live",
-    detail: "Focused breadth with real contract pressure instead of fake parity.",
-  },
-  {
-    label: "CLI / SDK / CDK",
-    value: "real client compatibility",
-    detail: "AWS CLI, Java SDK smoke, CDK deploys, Preflight validation, and a release gate.",
-  },
-  {
-    label: "1 binary",
-    value: "operationally simple",
-    detail: "Core control plane boots locally with one data dir and optional Docker for Lambda.",
-  },
-];
-
-const validatedLoop = [
-  {
-    step: "01",
-    title: "Java SDK over the network",
-    body: "A real AWS SDK for Java v2 fixture talks to Stratus through STS, DynamoDB, SQS, and S3 instead of through mocks.",
-    meta: "client compatibility",
-  },
-  {
-    step: "02",
-    title: "CDK deploy into the emulator",
-    body: "A bootstrapless CDK fixture deploys a live local path through CloudFormation into API Gateway, Lambda, SQS, and DynamoDB.",
-    meta: "deploy realism",
-  },
-  {
-    step: "03",
-    title: "Preflight checks the real path",
-    body: "Preflight lints readiness, then validates structural, wiring, IAM, and behavioural assertions against the deployed stack.",
-    meta: "external verification",
-  },
-  {
-    step: "04",
-    title: "Release gate runs the loop together",
-    body: "The release gate chains the Java SDK smoke and the external Preflight CDK smoke before changes should be trusted.",
-    meta: "proof, not promises",
-  },
-];
-
-const storyCards = [
-  {
-    eyebrow: "Stratus",
-    title: "A local AWS control plane built for fast loops, not vague demos.",
-    body: "Request classification is explicit, service semantics stay isolated, metadata lives in bbolt, large payloads live on disk, and failures are shaped to be understandable.",
-  },
-  {
-    eyebrow: "Preflight",
-    title: "An external validator that keeps the emulator honest.",
-    body: "Preflight treats Stratus as a consumer would. It deploys, probes, and verifies structural, wiring, IAM, and behavioural paths without reaching into implementation internals, and it can attach optional AI-assisted diagnosis when assertions fail.",
-  },
-];
-
-const valueCards = [
-  {
-    eyebrow: "Stratus solves execution",
-    title: "Local execution and compatibility for real AWS-shaped workflows.",
-    points: [
-      "Run AWS-shaped infrastructure locally",
-      "Use real tooling like AWS CLI, SDKs, and CDK",
-      "Get fast feedback without deploying to AWS",
-      "Reproduce failures in a deterministic environment",
-    ],
-  },
-  {
-    eyebrow: "Preflight solves trust",
-    title: "External verification before you decide the stack is ready.",
-    points: [
-      "Prove the stack actually works, not just that resources were created",
-      "Validate structure, wiring, IAM, and behavior from the outside",
-      "Add optional AI-assisted diagnosis when something fails",
-      "Catch compatibility regressions before cloud deployment",
-    ],
-  },
-];
-
-const workflow = [
-  {
-    step: "01",
-    title: "Boot Stratus locally",
-    body: "Run one process, point standard AWS tooling at it, and get an operator-friendly terminal view instead of silent middleware soup.",
-  },
-  {
-    step: "02",
-    title: "Deploy a real path",
-    body: "Use AWS CLI, SDKs, or CDK against the emulator. The happy path is intentional: API Gateway to Lambda to SQS to Lambda to DynamoDB.",
-  },
-  {
-    step: "03",
-    title: "Let Preflight verify behavior",
-    body: "Preflight catches the difference between metadata-looking-correct and the actual path working end to end.",
-  },
-];
-
-const terminalLines = [
-  "INFO  200 sts.GetCallerIdentity POST / 3ms 0d1f48c8",
-  "INFO  200 s3.CreateBucket PUT /demo-artifacts 5ms 3f2b1011",
-  "INFO  200 lambda.CreateFunction POST /2015-03-31/functions 11ms 61a6d22d",
-  "INFO  200 apigatewayv2.CreateApi POST /v2/apis 7ms 8303d5f7",
-  "INFO  stratus-inline-httpapi port=9001 4e5a3d1c",
-  "INFO  200 sqs.SendMessage POST / 4ms 7a913f23",
-  "INFO  200 dynamodb.PutItem POST / 6ms c0e7b91a",
-];
-
-const examples = [
-  {
-    title: "Java SDK smoke",
-    body: "A real AWS SDK for Java v2 fixture proves STS, DynamoDB, SQS, and S3 over a network boundary instead of through mocks.",
-    meta: "Maven fixture",
-  },
-  {
-    title: "CDK deploy path",
-    body: "The inline HTTP API stack deploys through CloudFormation and resolves into a live execute-api path in the emulator.",
-    meta: "Bootstrapless CDK",
-  },
-  {
-    title: "Preflight gate",
-    body: "Use the external validator to assert structural, wiring, IAM, and behavioural guarantees, then layer in optional AI-assisted diagnosis to speed up failure analysis.",
-    meta: "Black-box validation + diagnosis",
-  },
-  {
-    title: "Release gate",
-    body: "The release gate runs the Java SDK smoke and the external Preflight CDK smoke together so compatibility is continuously re-proven.",
-    meta: "CI-ready proof loop",
-  },
-];
-
-const compatibilityItems = [
-  "AWS CLI",
-  "AWS SDKs",
-  "AWS CDK",
-  "Terraform",
-  "Preflight",
-];
+import Link from "next/link";
+import { BenchmarkChart } from "@/components/benchmark-chart";
+import { CodePanel } from "@/components/code-panel";
+import { CopyButton } from "@/components/copy-button";
+import { HeroTerminal } from "@/components/hero-terminal";
+import { SectionHeading } from "@/components/section-heading";
+import { SiteFooter } from "@/components/site-footer";
+import { GitHubIcon, SiteHeader } from "@/components/site-header";
+import {
+  benchmark,
+  chaosActions,
+  chaosSample,
+  ciSample,
+  ciSteps,
+  controlEndpoints,
+  controlSample,
+  demoSteps,
+  diagnosis,
+  eventPaths,
+  installCommand,
+  links,
+  mcpInstall,
+  mcpTools,
+  pillars,
+  quickstart,
+  sdkSample,
+  stats,
+  worksWith,
+} from "@/content/site";
 
 export default function Home() {
   return (
-    <main className="site-shell">
-      <div className="ambient ambient-left" />
-      <div className="ambient ambient-right" />
+    <>
+      <SiteHeader />
+      <main>
+        <Hero />
+        <StatsBand />
+        <Pillars />
+        <ControlSection />
+        <CiSection />
+        <BenchmarkSection />
+        <ChaosSection />
+        <AgentsSection />
+        <DemoSection />
+        <PreflightBand />
+        <QuickStart />
+      </main>
+      <SiteFooter />
+    </>
+  );
+}
 
-      <header className="topbar">
-        <a className="brand" href="#top">
-          <span className="brand-mark">S</span>
-          <span className="brand-copy">
-            <strong>Stratus</strong>
-            <span>with Preflight</span>
-          </span>
-        </a>
-
-        <nav className="topnav" aria-label="Primary">
-          <a href="#platform">Platform</a>
-          <a href="/preflight">Preflight</a>
-          <a href="#workflows">Workflows</a>
-          <a href="#proof">Proof</a>
-          <a href="#repos">Repos</a>
-        </nav>
-      </header>
-
-      <section className="hero" id="top">
+function Hero() {
+  return (
+    <section className="hero" id="top">
+      <div className="hero-bg" aria-hidden />
+      <div className="container hero-grid">
         <div className="hero-copy">
-          <p className="eyebrow">Local AWS, sharpened for real engineering loops</p>
+          <a className="announce" href="#features">
+            <span className="announce-tag">New</span>
+            Snapshots, seeded chaos and an MCP server
+            <span aria-hidden>→</span>
+          </a>
           <h1>
-            Build locally.
+            Local AWS that
             <br />
-            Deploy realistically.
+            <span className="grad-text">snaps back</span>
             <br />
-            Verify externally.
+            in 11&nbsp;ms.
           </h1>
-          <p className="hero-text">
-            Stratus emulates your AWS stack locally. Preflight verifies that it
-            actually works before you deploy.
+          <p className="hero-lede">
+            Stratus is a single-binary AWS emulator built for CI pipelines and coding agents. Snapshot
+            state, fork isolated test runs, replay faults by seed, and get failures explained in plain
+            language.
           </p>
-
           <div className="hero-actions">
-            <a className="button button-primary" href="https://github.com/rmukubvu/stratus" target="_blank" rel="noreferrer">
-              Explore Stratus
+            <a className="btn btn-primary" href="#quickstart">
+              Get started
             </a>
-            <a className="button button-secondary" href="https://github.com/rmukubvu/preflight" target="_blank" rel="noreferrer">
-              Explore Preflight
+            <a className="btn btn-ghost" href={links.repo} target="_blank" rel="noreferrer">
+              <GitHubIcon /> Star on GitHub
             </a>
+          </div>
+          <div className="install">
+            <span className="install-prompt">$</span>
+            <code>{installCommand}</code>
+            <CopyButton text={installCommand} />
           </div>
         </div>
+        <HeroTerminal />
+      </div>
 
-        <aside className="hero-panel">
-          <div className="panel-glow" />
-          <div className="terminal-card">
-            <div className="terminal-top">
-              <span>operator view</span>
-              <span>localhost:4566</span>
+      <div className="container works-with" aria-label="Works with">
+        <span>Works with</span>
+        <ul>
+          {worksWith.map((tool) => (
+            <li key={tool}>{tool}</li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  );
+}
+
+function StatsBand() {
+  return (
+    <section className="container stats" aria-label="Highlights">
+      {stats.map((s) => (
+        <div className="stat" key={s.label}>
+          <strong>{s.value}</strong>
+          <span className="stat-label">{s.label}</span>
+          <span className="stat-detail">{s.detail}</span>
+        </div>
+      ))}
+    </section>
+  );
+}
+
+function Pillars() {
+  return (
+    <section className="section container" id="features">
+      <SectionHeading kicker="What's new" title="Four reasons your tests stop being slow and flaky." align="center">
+        All of it is covered by tests and re-proven in CI on every push.
+      </SectionHeading>
+      <div className="pillars">
+        {pillars.map((p, i) => (
+          <a className={`pillar pillar-${i + 1}`} href={`#${p.id}`} key={p.id}>
+            <span className="pillar-kicker">{p.kicker}</span>
+            <h3>{p.title}</h3>
+            <p>{p.body}</p>
+            <ul>
+              {p.bullets.map((b) => (
+                <li key={b}>{b}</li>
+              ))}
+            </ul>
+            <span className="pillar-more">Learn more →</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function ControlSection() {
+  return (
+    <section className="section container split" id="control">
+      <div>
+        <SectionHeading kicker="Control API" title="A clean slate whenever you want one.">
+          One JSON API on the normal Stratus port manages the emulator itself. Snapshots are
+          transactionally consistent and hard-link blobs, so they cost little disk even with big S3
+          objects or Lambda bundles.
+        </SectionHeading>
+        <ul className="endpoint-list">
+          {controlEndpoints.map((e) => (
+            <li key={e.path}>
+              <span className={`method method-${e.method.toLowerCase()}`}>{e.method}</span>
+              <code>{e.path}</code>
+              <span className="endpoint-note">{e.note}</span>
+            </li>
+          ))}
+        </ul>
+        <a className="text-link" href={links.controlApiDoc}>
+          Control API reference →
+        </a>
+      </div>
+      <CodePanel samples={controlSample} caption="Control API" />
+    </section>
+  );
+}
+
+function CiSection() {
+  return (
+    <section className="section section-tint" id="ci">
+      <div className="container">
+        <SectionHeading kicker="Clean, fast CI" title="Every CI run gets its own private AWS.">
+          <code>stratus ci</code> wraps your test command. Jobs run in parallel without sharing state,
+          and nothing outlives the run: no orphaned containers, ports or data directories.
+        </SectionHeading>
+        <ol className="steps">
+          {ciSteps.map((s, i) => (
+            <li key={s.title}>
+              <span className="step-num">{String(i + 1).padStart(2, "0")}</span>
+              <h3>{s.title}</h3>
+              <p>{s.body}</p>
+            </li>
+          ))}
+        </ol>
+        <div className="split split-top">
+          <div className="callouts">
+            <div className="callout">
+              <h3>Linux, macOS and Windows</h3>
+              <p>
+                The GitHub Action installs Stratus on all three runners. Everything works without
+                Docker except Lambda execution, which needs Linux containers.
+              </p>
             </div>
-            <div className="terminal-body">
-              <div className="terminal-metrics">
-                <div>
-                  <strong>2xx</strong>
-                  <span>182</span>
-                </div>
-                <div>
-                  <strong>4xx</strong>
-                  <span>3</span>
-                </div>
-                <div>
-                  <strong>5xx</strong>
-                  <span>0</span>
-                </div>
-              </div>
-              <pre>
-                {terminalLines.map((line) => (
-                  <span key={line}>{line}</span>
-                ))}
-              </pre>
+            <div className="callout">
+              <h3>Self-cleaning, even after a crash</h3>
+              <p>
+                Every Lambda container is labelled with the instance, process and host that owns it.
+                On startup Stratus reaps anything a dead process left behind.
+              </p>
             </div>
+            <a className="text-link" href={links.ciDoc}>
+              Running Stratus in CI →
+            </a>
           </div>
-        </aside>
-      </section>
+          <CodePanel samples={ciSample} caption="CI" />
+        </div>
+      </div>
+    </section>
+  );
+}
 
-      <section className="positioning-section">
-        <div className="section-heading">
-          <p className="eyebrow">What this is</p>
-          <h2>Stratus and Preflight give developers a credible local AWS delivery loop.</h2>
-          <p className="section-copy">
-            One product gives you fast local execution and compatibility. The
-            other gives you external proof that the path really works.
+function BenchmarkSection() {
+  return (
+    <section className="section container split" id="benchmark">
+      <div>
+        <SectionHeading kicker="Benchmark" title="From 196 seconds to 2.2.">
+          Most integration suites spend their time getting back to a known state, not testing.
+          Restoring a snapshot replaces about 2,000 setup calls per test, which makes isolation{" "}
+          <strong>~89x faster</strong>. Each strategy must restore the exact fixture, so a leaky one
+          fails instead of looking fast.
+        </SectionHeading>
+        <p className="fine-print">
+          4 vCPU Linux container. Fixture: 4 buckets × 100 objects, 3 tables × 500 items, 3 queues × 50
+          messages. CI reruns the benchmark on every push.
+        </p>
+        <a className="text-link" href={links.benchmarkDoc}>
+          Methodology and raw numbers →
+        </a>
+      </div>
+      <BenchmarkChart rows={benchmark} />
+    </section>
+  );
+}
+
+function ChaosSection() {
+  return (
+    <section className="section section-dark" id="chaos">
+      <div className="container split">
+        <div>
+          <SectionHeading kicker="Deterministic chaos" title="Chaos you can replay, not shrug off.">
+            Whether the nth matching request is faulted depends only on the seed, the rule and n. Same
+            seed, same faults, so a chaos failure is a bug you can reproduce. No service mesh, sidecar
+            or code changes, because every call already goes through Stratus.
+          </SectionHeading>
+          <div className="chip-group">
+            <span className="chip-title">Actions</span>
+            <ul className="chips">
+              {chaosActions.map((a) => (
+                <li key={a}>
+                  <code>{a}</code>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="chip-group">
+            <span className="chip-title">Internal event paths, which no fault injector in AWS can reach</span>
+            <ul className="chips chips-accent">
+              {eventPaths.map((p) => (
+                <li key={p}>{p}</li>
+              ))}
+            </ul>
+          </div>
+          <p className="dark-note">
+            Already write <strong>AWS Fault Injection Service</strong> templates? Stratus speaks the FIS
+            API, so they run unchanged from the AWS CLI or any SDK. <a href={links.fisDoc}>FIS support →</a>
           </p>
         </div>
+        <CodePanel samples={chaosSample} caption="Chaos" />
+      </div>
+    </section>
+  );
+}
 
-        <div className="positioning-grid">
-          {valueCards.map((card) => (
-            <article className="positioning-card" key={card.title}>
-              <p className="eyebrow">{card.eyebrow}</p>
-              <h3>{card.title}</h3>
-              <ul>
-                {card.points.map((point) => (
-                  <li key={point}>{point}</li>
-                ))}
-              </ul>
-            </article>
-          ))}
-        </div>
-      </section>
+function AgentsSection() {
+  return (
+    <section className="section container" id="agents">
+      <SectionHeading kicker="Agent-native" title="A local AWS your coding agent can drive safely." align="center">
+        Claude Code, Cursor, Codex or any MCP client can check Stratus is up, save and roll back state,
+        inject faults, and ask why a call failed, without parsing stack traces.
+      </SectionHeading>
 
-      <section className="proof-strip" aria-label="Highlights">
-        {proofPoints.map((item) => (
-          <article className="proof-chip" key={item.label}>
-            <p className="proof-label">{item.label}</p>
-            <h2>{item.value}</h2>
-            <p>{item.detail}</p>
-          </article>
-        ))}
-      </section>
-
-      <section className="story-grid" id="platform">
-        {storyCards.map((card) => (
-          <article className="story-card" key={card.title}>
-            <p className="eyebrow">{card.eyebrow}</p>
-            <h2>{card.title}</h2>
-            <p>{card.body}</p>
-          </article>
-        ))}
-      </section>
-
-      <section className="architecture-band">
-        <div className="band-copy">
-          <p className="eyebrow">Compatibility before cleverness</p>
-          <h2>A narrower surface with harder guarantees.</h2>
+      <div className="agents-grid">
+        <div className="agent-card">
+          <span className="pillar-kicker">MCP server</span>
+          <h3>One line to connect.</h3>
+          <div className="install install-dark">
+            <span className="install-prompt">$</span>
+            <code>{mcpInstall}</code>
+            <CopyButton text={mcpInstall} />
+          </div>
           <p>
-            The architecture is intentionally plain: a `net/http` front door,
-            explicit request classification, isolated service semantics,
-            bbolt-backed metadata, filesystem blobs, and Docker only where
-            Lambda execution actually needs it.
+            <code>--start</code> gives the agent its own throwaway Stratus, removed on exit. Failing tools
+            return a stable error code and a hint, so the agent can correct itself.
+          </p>
+          <ul className="tool-list">
+            {mcpTools.map((t) => (
+              <li key={t}>
+                <code>{t}</code>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="agent-card">
+          <span className="pillar-kicker">LLM diagnostics</span>
+          <h3>Failures, explained for agents.</h3>
+          <div className="diagnosis" role="group" aria-label="Example stratus diagnose output">
+            <div className="diagnosis-head">
+              <code>stratus diagnose --since 5m</code>
+            </div>
+            <p className="diagnosis-summary">{diagnosis.summary}</p>
+            <dl>
+              <div>
+                <dt>category</dt>
+                <dd>
+                  <span className="tag">{diagnosis.category}</span>
+                </dd>
+              </div>
+              <div>
+                <dt>likely_cause</dt>
+                <dd>{diagnosis.cause}</dd>
+              </div>
+              <div>
+                <dt>next_step</dt>
+                <dd>{diagnosis.next}</dd>
+              </div>
+              <div>
+                <dt>your_bug</dt>
+                <dd>
+                  <span className="tag tag-warn">{String(diagnosis.yourBug)}</span>
+                </dd>
+              </div>
+            </dl>
+          </div>
+          <p>Chaos faults are attributed to the rule that injected them, so an agent never “fixes” working code.</p>
+        </div>
+      </div>
+
+      <div className="split split-top sdk-row">
+        <div>
+          <SectionHeading kicker="SDKs" title="TypeScript and Python, zero dependencies.">
+            Typed errors and helpers that always clean up: snapshot scopes roll state back after a block
+            and chaos scopes always stop the experiment. Python ships pytest fixtures too.
+          </SectionHeading>
+          <p className="soon">
+            <span className="soon-dot" aria-hidden />
+            <span>
+              Coming soon to npm and PyPI as <code>stratus-emulator</code>. Use them from the repo today:{" "}
+              <a href={links.sdkTs}>TypeScript</a> · <a href={links.sdkPy}>Python</a>
+            </span>
           </p>
         </div>
-        <div className="service-cloud" aria-label="Service families">
-          {serviceFamilies.map((service) => (
-            <span key={service}>{service}</span>
+        <CodePanel samples={sdkSample} caption="SDKs" />
+      </div>
+    </section>
+  );
+}
+
+function DemoSection() {
+  return (
+    <section className="section section-tint" id="demo">
+      <div className="container">
+        <SectionHeading kicker="Demo" title="Watch an agent find a bug, fix it, and prove it under chaos." align="center">
+          A real <code>stratus mcp</code> session, replayed step by step. CI runs it on every push and
+          fails if any step stops behaving as described.
+        </SectionHeading>
+        <ol className="timeline">
+          {demoSteps.map((s, i) => (
+            <li key={s.title}>
+              <span className="timeline-dot">{i + 1}</span>
+              <div>
+                <h3>{s.title}</h3>
+                <p>{s.body}</p>
+              </div>
+            </li>
           ))}
+        </ol>
+        <div className="center">
+          <a className="btn btn-dark" href={links.agentDemo}>
+            Run the demo yourself
+          </a>
         </div>
-      </section>
+      </div>
+    </section>
+  );
+}
 
-      <section className="workflow-section" id="workflows">
-        <div className="section-heading">
-          <p className="eyebrow">How the loop works</p>
-          <h2>Emulate, deploy, verify, repeat.</h2>
-        </div>
-
-        <div className="workflow-grid">
-          {workflow.map((item) => (
-            <article className="workflow-card" key={item.step}>
-              <span className="workflow-step">{item.step}</span>
-              <h3>{item.title}</h3>
-              <p>{item.body}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="examples-section" id="proof">
-        <div className="section-heading">
-          <p className="eyebrow">Proof paths</p>
-          <h2>Real tooling, not emulator theater.</h2>
-          <p className="section-copy">
-            The product claim is backed by one explicit loop: Java SDK, CDK,
-            Preflight, then the release gate that runs them together.
-          </p>
-        </div>
-
-        <div className="examples-grid">
-          {examples.map((example) => (
-            <article className="example-card" key={example.title}>
-              <span>{example.meta}</span>
-              <h3>{example.title}</h3>
-              <p>{example.body}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="workflow-section">
-        <div className="section-heading">
-          <p className="eyebrow">Validated loop</p>
-          <h2>The same stack gets pressure from multiple directions.</h2>
-        </div>
-
-        <div className="workflow-grid">
-          {validatedLoop.map((item) => (
-            <article className="workflow-card" key={item.step + item.title}>
-              <span className="workflow-step">{item.step}</span>
-              <h3>{item.title}</h3>
-              <p>{item.body}</p>
-              <span>{item.meta}</span>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="compatibility-strip" aria-label="Compatibility">
-        <p>Built for AWS-compatible local workflows</p>
+function PreflightBand() {
+  return (
+    <section className="section container">
+      <div className="preflight-band">
         <div>
-          {compatibilityItems.map((item) => (
-            <span key={item}>{item}</span>
-          ))}
-        </div>
-      </section>
-
-      <section className="cta-panel" id="repos">
-        <div>
-          <p className="eyebrow">Open source stack</p>
+          <p className="kicker">Pair it with Preflight</p>
           <h2>Emulate locally. Verify externally.</h2>
           <p>
-            Stratus gives you the local AWS control plane. Preflight gives you
-            the external pressure that keeps the claim credible.
-          </p>
-          <p>
-            After validating locally, you can deploy to AWS with{" "}
-            <a href="https://www.getkanu.com/" target="_blank" rel="noreferrer">
-              Kanu
-            </a>
-            .
+            Preflight lints, scores, diagnoses and load-checks your stack against Stratus from the
+            outside, so you know it works before you deploy. Then ship to AWS with{" "}
+            <a href={links.kanu}>Kanu</a>.
           </p>
         </div>
-        <div className="cta-actions">
-          <a className="button button-primary" href="https://github.com/rmukubvu/stratus" target="_blank" rel="noreferrer">
-            View Stratus Repo
+        <Link className="btn btn-primary" href="/preflight">
+          Explore Preflight
+        </Link>
+      </div>
+    </section>
+  );
+}
+
+function QuickStart() {
+  return (
+    <section className="section container split" id="quickstart">
+      <div>
+        <SectionHeading kicker="Quick start" title="Running in under a minute.">
+          Point the AWS CLI, any SDK, CDK or Terraform at <code>localhost:4566</code>. One binary, one
+          data directory, and Docker only if you run Lambda functions.
+        </SectionHeading>
+        <div className="hero-actions">
+          <a className="btn btn-primary" href={links.repo} target="_blank" rel="noreferrer">
+            <GitHubIcon /> View on GitHub
           </a>
-          <a className="button button-secondary" href="https://github.com/rmukubvu/preflight" target="_blank" rel="noreferrer">
-            View Preflight Repo
+          <a className="btn btn-ghost" href={links.docs}>
+            Read the docs
           </a>
         </div>
-      </section>
-    </main>
+      </div>
+      <CodePanel samples={quickstart} />
+    </section>
   );
 }
