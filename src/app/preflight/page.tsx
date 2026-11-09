@@ -1,3 +1,15 @@
+import type { Metadata } from "next";
+import { CodePanel } from "@/components/code-panel";
+import { SectionHeading } from "@/components/section-heading";
+import { SiteFooter } from "@/components/site-footer";
+import { GitHubIcon, SiteHeader } from "@/components/site-header";
+import { links } from "@/content/site";
+
+export const metadata: Metadata = {
+  title: "Preflight · External proof for local AWS stacks",
+  description: "Preflight lints, scores, diagnoses and load-checks your stack against Stratus before you deploy to AWS.",
+};
+
 const sections = [
   {
     eyebrow: "Lint",
@@ -69,123 +81,92 @@ const proofLoop = [
 
 export default function PreflightPage() {
   return (
-    <main className="site-shell preflight-shell">
-      <div className="ambient ambient-left" />
-      <div className="ambient ambient-right" />
-
-      <header className="topbar">
-        <a className="brand" href="/">
-          <span className="brand-mark">P</span>
-          <span className="brand-copy">
-            <strong>Preflight</strong>
-            <span>with Stratus</span>
-          </span>
-        </a>
-
-        <nav className="topnav" aria-label="Primary">
-          <a href="/">Stratus</a>
-          <a href="#examples">Examples</a>
-          <a href="#loop">Loop</a>
-          <a href="https://github.com/rmukubvu/preflight" target="_blank" rel="noreferrer">
-            GitHub
-          </a>
-        </nav>
-      </header>
-
-      <section className="docs-hero" id="top">
-        <div className="docs-hero-copy">
-          <p className="eyebrow">Preflight</p>
-          <h1>External proof for local AWS delivery loops.</h1>
-          <p className="hero-text">
-            Preflight lints, scores, diagnoses, and load-checks your stack
-            against a local emulator before you decide it is ready for AWS.
-          </p>
-
-          <div className="hero-actions">
-            <a className="button button-primary" href="https://github.com/rmukubvu/preflight" target="_blank" rel="noreferrer">
-              Explore Preflight
-            </a>
-            <a className="button button-secondary" href="#examples">
-              See Examples
-            </a>
-          </div>
-        </div>
-
-        <aside className="docs-hero-panel">
-          <div className="proof-mini-card">
-            <span className="eyebrow">Validated Loop</span>
-            <ul>
-              {proofLoop.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </div>
-        </aside>
-      </section>
-
-      <section className="docs-section" id="examples">
-        <div className="section-heading">
-          <p className="eyebrow">Examples</p>
-          <h2>What each Preflight surface is for.</h2>
-          <p className="section-copy">
-            These are the four operator-facing surfaces that make Preflight
-            useful in practice: static lint, readiness scores, concrete
-            diagnoses, and generated load checks.
-          </p>
-        </div>
-
-        <div className="docs-grid">
-          {sections.map((section) => (
-            <article className="docs-card" key={section.title}>
-              <p className="eyebrow">{section.eyebrow}</p>
-              <h3>{section.title}</h3>
-              <p>{section.body}</p>
-              <div className="docs-command">
-                <span>Command</span>
-                <code>{section.command}</code>
+    <>
+      <SiteHeader />
+      <main>
+        <section className="hero page-hero" id="top">
+          <div className="hero-bg" aria-hidden />
+          <div className="container hero-grid">
+            <div>
+              <p className="kicker">Preflight</p>
+              <h1>
+                External proof for <span className="grad-text">local AWS</span> delivery loops.
+              </h1>
+              <p className="hero-lede">
+                Preflight lints, scores, diagnoses and load-checks your stack against a local emulator
+                before you decide it is ready for AWS.
+              </p>
+              <div className="hero-actions">
+                <a className="btn btn-primary" href={links.preflightRepo} target="_blank" rel="noreferrer">
+                  <GitHubIcon /> Explore Preflight
+                </a>
+                <a className="btn btn-ghost" href="#examples">
+                  See examples
+                </a>
               </div>
-              <pre className="docs-output">
-                <code>{section.output}</code>
-              </pre>
+            </div>
+            <div className="loop-card">
+              <p className="kicker">The validated loop</p>
+              <ol>
+                {proofLoop.map((item, i) => (
+                  <li key={item}>
+                    <span>{String(i + 1).padStart(2, "0")}</span>
+                    {item}
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </div>
+        </section>
+
+        <section className="section container" id="examples">
+          <SectionHeading kicker="Examples" title="What each Preflight surface is for.">
+            Static lint, readiness scores, concrete diagnoses and generated load checks: the four
+            operator-facing surfaces that make Preflight useful in practice.
+          </SectionHeading>
+          <div className="docs-grid split-top">
+            {sections.map((section) => (
+              <article className="docs-card" key={section.title}>
+                <p className="kicker">{section.eyebrow}</p>
+                <h3>{section.title}</h3>
+                <p>{section.body}</p>
+                <CodePanel
+                  caption="terminal"
+                  samples={[{ label: "terminal", language: "sh", code: `$ ${section.command}\n\n${section.output}`, copyText: section.command }]}
+                />
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="section container" id="loop">
+          <SectionHeading kicker="Why it matters" title="The part that turns a local stack into a trustworthy one.">
+            Stratus gives you local AWS-shaped execution. Preflight tells you whether the stack is secure,
+            observable, reliable and scalable, then proves the path under behavioural and load pressure.
+          </SectionHeading>
+          <div className="compare-grid split-top">
+            <article className="compare-card">
+              <p className="kicker">Before deploy</p>
+              <h3>Find the missing conditions early.</h3>
+              <ul>
+                <li>Missing alarms, DLQs, encryption and auth posture.</li>
+                <li>Implicit concurrency, throttling and autoscaling decisions.</li>
+                <li>Weak observability and durability defaults that would only show up later.</li>
+              </ul>
             </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="docs-section" id="loop">
-        <div className="section-heading">
-          <p className="eyebrow">Why it matters</p>
-          <h2>Preflight is the part that turns a local stack into a trustworthy one.</h2>
-          <p className="section-copy">
-            Stratus gives you local AWS-shaped execution. Preflight tells you
-            whether the stack has the conditions required to be secure,
-            observable, reliable, and scalable, then proves the path under
-            behavioral and load pressure.
-          </p>
-        </div>
-
-        <div className="positioning-grid">
-          <article className="positioning-card">
-            <p className="eyebrow">Before deploy</p>
-            <h3>Find the missing conditions early.</h3>
-            <ul>
-              <li>Missing alarms, DLQs, encryption, and auth posture.</li>
-              <li>Implicit concurrency, throttling, and autoscaling decisions.</li>
-              <li>Weak observability and durability defaults that would only show up later.</li>
-            </ul>
-          </article>
-
-          <article className="positioning-card">
-            <p className="eyebrow">After deploy</p>
-            <h3>Verify the path, then pressure it.</h3>
-            <ul>
-              <li>Structural, wiring, IAM, and behavioural assertions against the live stack.</li>
-              <li>Generated HTTP load scenarios from the same behavioural path.</li>
-              <li>Machine-readable output for CI, PR comments, and future UI surfaces.</li>
-            </ul>
-          </article>
-        </div>
-      </section>
-    </main>
+            <article className="compare-card">
+              <p className="kicker">After deploy</p>
+              <h3>Verify the path, then pressure it.</h3>
+              <ul>
+                <li>Structural, wiring, IAM and behavioural assertions against the live stack.</li>
+                <li>Generated HTTP load scenarios from the same behavioural path.</li>
+                <li>Machine-readable output for CI, PR comments and future UI surfaces.</li>
+              </ul>
+            </article>
+          </div>
+        </section>
+      </main>
+      <SiteFooter />
+    </>
   );
 }
