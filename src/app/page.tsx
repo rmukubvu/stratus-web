@@ -17,6 +17,7 @@ import {
   controlSample,
   demoSteps,
   diagnosis,
+  emulatorComparison,
   eventPaths,
   installCommand,
   links,
@@ -24,8 +25,10 @@ import {
   mcpTools,
   pillars,
   quickstart,
+  sdkInstalls,
   sdkSample,
   stats,
+  stratusExtras,
   worksWith,
 } from "@/content/site";
 import { serviceCount, serviceGroups } from "@/content/services";
@@ -39,6 +42,7 @@ export default function Home() {
         <StatsBand />
         <Pillars />
         <ServicesSection />
+        <AwsEmulatorSection />
         <ControlSection />
         <CiSection />
         <BenchmarkSection />
@@ -59,9 +63,9 @@ function Hero() {
       <div className="hero-bg" aria-hidden />
       <div className="container hero-grid">
         <div className="hero-copy">
-          <a className="announce" href="#services">
+          <a className="announce" href="#sdks">
             <span className="announce-tag">New</span>
-            Real RDS, ElastiCache and Kafka, plus Bedrock replay
+            SDKs now on npm and PyPI
             <span aria-hidden>→</span>
           </a>
           <h1>
@@ -178,6 +182,53 @@ function ServicesSection() {
         <a className="text-link" href={links.enginesDoc}>
           How the real engines work →
         </a>
+      </p>
+    </section>
+  );
+}
+
+function AwsEmulatorSection() {
+  return (
+    <section className="section container" id="aws-emulator">
+      <SectionHeading kicker="Stratus and the AWS Emulator" title="Breadth from AWS. Behaviour from Stratus." align="center">
+        AWS now publishes an official emulator that aims to cover every AWS API, and it is the right tool
+        when you need an API Stratus does not have yet. Stratus is built for the parts of testing that
+        depend on state, permissions and failure.
+      </SectionHeading>
+      <div className="compare-table" role="table" aria-label="Stratus and the AWS Emulator compared">
+        <div className="compare-row compare-head" role="row">
+          <span role="columnheader" />
+          <span role="columnheader">AWS Emulator</span>
+          <span role="columnheader">Stratus</span>
+        </div>
+        {emulatorComparison.map((row) => (
+          <div className="compare-row" role="row" key={row.topic}>
+            <span className="compare-topic" role="rowheader">
+              {row.topic}
+            </span>
+            <span role="cell" data-label="AWS Emulator">
+              {row.awsEmulator}
+            </span>
+            <span role="cell" data-label="Stratus" className="compare-stratus">
+              {row.stratus}
+            </span>
+          </div>
+        ))}
+      </div>
+      <div className="chip-group compare-extras">
+        <span className="chip-title">Also built into Stratus</span>
+        <ul className="chips chips-light">
+          {stratusExtras.map((x) => (
+            <li key={x}>{x}</li>
+          ))}
+        </ul>
+      </div>
+      <p className="fine-print services-note">
+        AWS Emulator details are from{" "}
+        <a className="text-link" href={links.awsEmulatorDocs} target="_blank" rel="noreferrer">
+          its documentation
+        </a>{" "}
+        as of November 2026. AWS Emulator is a product of Amazon Web Services; Stratus is an independent project.
       </p>
     </section>
   );
@@ -378,18 +429,28 @@ function AgentsSection() {
         </div>
       </div>
 
-      <div className="split split-top sdk-row">
+      <div className="split split-top sdk-row" id="sdks">
         <div>
           <SectionHeading kicker="SDKs" title="TypeScript and Python, zero dependencies.">
             Typed errors and helpers that always clean up: snapshot scopes roll state back after a block
             and chaos scopes always stop the experiment. Python ships pytest fixtures too.
           </SectionHeading>
-          <p className="soon">
-            <span className="soon-dot" aria-hidden />
-            <span>
-              Coming soon to npm and PyPI as <code>stratus-emulator</code>. Use them from the repo today:{" "}
-              <a href={links.sdkTs}>TypeScript</a> · <a href={links.sdkPy}>Python</a>
-            </span>
+          <div className="sdk-installs">
+            {sdkInstalls.map((i) => (
+              <div className="sdk-install" key={i.registry}>
+                <a className="sdk-registry" href={i.href} target="_blank" rel="noreferrer">
+                  {i.registry} →
+                </a>
+                <div className="install">
+                  <span className="install-prompt">$</span>
+                  <code>{i.command}</code>
+                  <CopyButton text={i.command} />
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="fine-print">
+            Source and changelogs: <a href={links.sdkTs}>TypeScript</a> · <a href={links.sdkPy}>Python</a>
           </p>
         </div>
         <CodePanel samples={sdkSample} caption="SDKs" />

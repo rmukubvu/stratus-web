@@ -901,6 +901,111 @@ h3 {
   margin-top: 8px;
 }
 
+/* ------------------------------------------------------------ aws emulator */
+
+.compare-table {
+  max-width: 980px;
+  margin: 0 auto;
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow:
+    inset 0 0 0 1px var(--line),
+    var(--shadow-sm);
+  overflow: hidden;
+}
+
+.compare-row {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr) minmax(0, 1fr);
+  gap: 24px;
+  padding: 16px 24px;
+  font-size: 0.93rem;
+  color: var(--muted);
+}
+
+.compare-row + .compare-row {
+  border-top: 1px solid var(--line);
+}
+
+.compare-head {
+  background: var(--tint);
+  color: var(--ink);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.compare-topic {
+  color: var(--ink);
+  font-weight: 650;
+}
+
+.compare-stratus {
+  color: var(--ink-2);
+}
+
+.compare-row:not(.compare-head) .compare-stratus {
+  position: relative;
+  padding-left: 20px;
+}
+
+.compare-row:not(.compare-head) .compare-stratus::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.5em;
+  width: 10px;
+  height: 6px;
+  border-left: 2px solid var(--teal);
+  border-bottom: 2px solid var(--teal);
+  transform: rotate(-45deg);
+}
+
+.compare-extras {
+  max-width: 980px;
+  margin: 32px auto 0;
+  text-align: center;
+}
+
+.compare-extras .chips {
+  justify-content: center;
+}
+
+.chips.chips-light li {
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+  color: var(--ink-2);
+}
+
+/* -------------------------------------------------------------------- sdk */
+
+.sdk-installs {
+  display: grid;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.sdk-install {
+  display: grid;
+  gap: 6px;
+}
+
+.sdk-install .install {
+  margin-top: 0;
+}
+
+.sdk-row .fine-print a {
+  color: var(--teal);
+  font-weight: 600;
+}
+
+.sdk-registry {
+  color: var(--teal);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
 /* ------------------------------------------------------------- endpoints */
 
 .endpoint-list {
@@ -1705,6 +1810,35 @@ h3 {
 
   .service-groups {
     columns: 1;
+  }
+
+  .compare-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+    padding: 16px 18px;
+  }
+
+  .compare-head {
+    display: none;
+  }
+
+  .compare-row [role="cell"]::before {
+    content: attr(data-label) ": ";
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .compare-row:not(.compare-head) .compare-stratus {
+    padding-left: 0;
+  }
+
+  .compare-row:not(.compare-head) .compare-stratus::before {
+    content: attr(data-label) ": ";
+    position: static;
+    width: auto;
+    height: auto;
+    border: 0;
+    transform: none;
   }
 
   .stats .stat {
