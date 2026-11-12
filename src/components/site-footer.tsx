@@ -16,6 +16,7 @@ export function SiteFooter() {
         <div className="footer-cols">
           <div>
             <h4>Docs</h4>
+            <Link href="/get-started">Getting started</Link>
             <a href={links.controlApiDoc}>Control API</a>
             <a href={links.ciDoc}>CI</a>
             <a href={links.chaosDoc}>Chaos</a>

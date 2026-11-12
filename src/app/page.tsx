@@ -3,6 +3,7 @@ import { BenchmarkChart } from "@/components/benchmark-chart";
 import { CodePanel } from "@/components/code-panel";
 import { CopyButton } from "@/components/copy-button";
 import { HeroTerminal } from "@/components/hero-terminal";
+import { InstallTabs } from "@/components/install-tabs";
 import { SectionHeading } from "@/components/section-heading";
 import { SiteFooter } from "@/components/site-footer";
 import { GitHubIcon, SiteHeader } from "@/components/site-header";
@@ -19,18 +20,17 @@ import {
   diagnosis,
   emulatorComparison,
   eventPaths,
-  installCommand,
   links,
   mcpInstall,
   mcpTools,
   pillars,
-  quickstart,
   sdkInstalls,
   sdkSample,
   stats,
   stratusExtras,
   worksWith,
 } from "@/content/site";
+import { quickstartSamples } from "@/content/guide";
 import { serviceCount, serviceGroups } from "@/content/services";
 
 export default function Home() {
@@ -81,18 +81,14 @@ function Hero() {
             language.
           </p>
           <div className="hero-actions">
-            <a className="btn btn-primary" href="#quickstart">
+            <Link className="btn btn-primary" href="/get-started">
               Get started
-            </a>
+            </Link>
             <a className="btn btn-ghost" href={links.repo} target="_blank" rel="noreferrer">
               <GitHubIcon /> Star on GitHub
             </a>
           </div>
-          <div className="install">
-            <span className="install-prompt">$</span>
-            <code>{installCommand}</code>
-            <CopyButton text={installCommand} />
-          </div>
+          <InstallTabs />
         </div>
         <HeroTerminal />
       </div>
@@ -518,15 +514,15 @@ function QuickStart() {
           data directory, and Docker only for Lambda and the real database, cache and Kafka engines.
         </SectionHeading>
         <div className="hero-actions">
-          <a className="btn btn-primary" href={links.repo} target="_blank" rel="noreferrer">
+          <Link className="btn btn-primary" href="/get-started">
+            Step-by-step guide
+          </Link>
+          <a className="btn btn-ghost" href={links.repo} target="_blank" rel="noreferrer">
             <GitHubIcon /> View on GitHub
-          </a>
-          <a className="btn btn-ghost" href={links.docs}>
-            Read the docs
           </a>
         </div>
       </div>
-      <CodePanel samples={quickstart} />
+      <CodePanel samples={quickstartSamples} caption="Quick start" />
     </section>
   );
 }
