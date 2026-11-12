@@ -25,8 +25,6 @@ export const links = {
   kanu: "https://www.getkanu.com/",
 } as const;
 
-export const installCommand = "brew install rmukubvu/tap/stratus";
-
 export type Stat = { value: string; label: string; detail: string };
 
 export const stats: Stat[] = [
@@ -339,18 +337,6 @@ export const demoSteps = [
   { title: "Fix and restore", body: "One-line fix, stratus_snapshot_restore, rerun. Green." },
   { title: "Prove it under chaos", body: "Seed 42 throttles 30% of PutItem calls. The test still passes because the SDK retries." },
   { title: "Real vs injected", body: "Diagnostics splits it: 0 real failures, 11 injected and retried. Nothing to \"fix\"." },
-];
-
-export const quickstart: CodeSample[] = [
-  {
-    label: "Quick start",
-    language: "sh",
-    code: `brew install rmukubvu/tap/stratus   # or build from source with Go
-stratus                             # AWS on localhost:4566
-
-export AWS_ENDPOINT_URL=http://localhost:4566
-aws s3 mb s3://demo && aws sqs create-queue --queue-name jobs`,
-  },
 ];
 
 // Every AWS Emulator claim below comes from its documentation

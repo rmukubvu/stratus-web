@@ -43,3 +43,12 @@ test("JSON has no comment syntax", () => {
   const tokens = highlightLine('{ "id": "#1" }', "json");
   assert.ok(tokens.every((t) => t.kind !== "comment"));
 });
+
+test("treats # as a PowerShell comment", () => {
+  assert.deepEqual(highlightLine('$env:Path += ";x"   # for this session', "powershell"), [
+    { kind: "plain", text: "$env:Path += " },
+    { kind: "string", text: '";x"' },
+    { kind: "plain", text: "   " },
+    { kind: "comment", text: "# for this session" },
+  ]);
+});

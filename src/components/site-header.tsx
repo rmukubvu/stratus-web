@@ -2,6 +2,7 @@ import Link from "next/link";
 import { links } from "@/content/site";
 
 const nav = [
+  { href: "/get-started", label: "Get started" },
   { href: "/#services", label: "Services" },
   { href: "/#aws-emulator", label: "vs AWS Emulator" },
   { href: "/#ci", label: "CI" },

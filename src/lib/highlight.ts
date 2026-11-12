@@ -9,6 +9,7 @@ const commentMarkers: Record<string, string> = {
   sh: "#",
   yaml: "#",
   python: "#",
+  powershell: "#",
   ts: "//",
 };
 

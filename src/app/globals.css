@@ -77,6 +77,15 @@ li code,
   font-size: 0.88em;
 }
 
+/* Code blocks can sit inside list items (e.g. guide steps); keep inline-code chrome out of them. */
+pre code {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  font-size: inherit;
+}
+
 h1,
 h2,
 h3 {
@@ -1006,6 +1015,175 @@ h3 {
   font-weight: 600;
 }
 
+/* ---------------------------------------------------------- install tabs */
+
+.install-tabs {
+  max-width: 560px;
+  margin-top: 22px;
+}
+
+.install-tablist {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 10px;
+  background: var(--tint);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.install-tablist button {
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 7px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.install-tablist button.is-active {
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--shadow-sm);
+}
+
+.install-block {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 8px;
+  padding: 10px 8px 10px 16px;
+  border-radius: 12px;
+  background: var(--code-bg);
+  color: var(--code-ink);
+}
+
+.install-block pre {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  overflow-x: auto;
+  font-size: 0.82rem;
+  line-height: 1.9;
+  scrollbar-width: thin;
+}
+
+.install-line {
+  display: block;
+  white-space: nowrap;
+}
+
+.install-line .install-prompt {
+  display: inline-block;
+  min-width: 2.2em;
+  user-select: none;
+}
+
+.install-note {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+/* ---------------------------------------------------------------- guide */
+
+.guide-toc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 32px;
+}
+
+.guide-toc a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px 6px 6px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
+  box-shadow: inset 0 0 0 1px var(--line);
+  color: var(--ink-2);
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+.guide-toc a:hover {
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+}
+
+.guide-toc span {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--lime);
+  font-family: var(--font-mono), monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.guide {
+  padding-top: 48px;
+}
+
+.guide-steps {
+  display: grid;
+  gap: 20px;
+}
+
+.guide-step {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: 40px;
+  align-items: center;
+  padding: 32px;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow:
+    inset 0 0 0 1px var(--line),
+    var(--shadow-sm);
+}
+
+.guide-num {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--teal);
+}
+
+.guide-step h2 {
+  margin: 6px 0 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.guide-step-text > p:not(.fine-print) {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 0.98rem;
+}
+
+.guide-step .fine-print a,
+.guide-next-links a {
+  color: var(--teal);
+  font-weight: 600;
+}
+
+.guide-next {
+  margin-top: 56px;
+}
+
+.guide-next-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  margin-top: 16px;
+}
+
 /* ------------------------------------------------------------- endpoints */
 
 .endpoint-list {
@@ -1752,6 +1930,7 @@ h3 {
 @media (max-width: 900px) {
   .hero-grid,
   .split,
+  .guide-step,
   .agents-grid,
   .docs-grid,
   .compare-grid {
@@ -1812,6 +1991,10 @@ h3 {
     columns: 1;
   }
 
+  .guide-step .dots {
+    display: none;
+  }
+
   .compare-row {
     grid-template-columns: minmax(0, 1fr);
     gap: 6px;
@@ -1857,6 +2040,7 @@ h3 {
   }
 
   .agent-card,
+  .guide-step,
   .bench,
   .docs-card,
   .compare-card,
