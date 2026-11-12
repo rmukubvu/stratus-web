@@ -17,6 +17,10 @@ export const links = {
   agentDemo: "https://github.com/rmukubvu/stratus/tree/main/examples/agent-demo",
   sdkTs: "https://github.com/rmukubvu/stratus/tree/main/sdk/typescript",
   sdkPy: "https://github.com/rmukubvu/stratus/tree/main/sdk/python",
+  npmPackage: "https://www.npmjs.com/package/stratus-emulator",
+  pypiPackage: "https://pypi.org/project/stratus-emulator/",
+  iamDoc: "https://github.com/rmukubvu/stratus/blob/main/docs/iam.md",
+  awsEmulatorDocs: "https://docs.aws.amazon.com/emulator/",
   preflightRepo: "https://github.com/rmukubvu/preflight",
   kanu: "https://www.getkanu.com/",
 } as const;
@@ -271,6 +275,13 @@ export const mcpTools = [
 
 export const mcpInstall = "claude mcp add stratus -- stratus mcp --start";
 
+export type SdkInstall = { registry: string; command: string; href: string };
+
+export const sdkInstalls: SdkInstall[] = [
+  { registry: "npm", command: "npm install stratus-emulator", href: links.npmPackage },
+  { registry: "PyPI", command: "pip install stratus-emulator", href: links.pypiPackage },
+];
+
 export const sdkSample: CodeSample[] = [
   {
     label: "TypeScript",
@@ -340,4 +351,49 @@ stratus                             # AWS on localhost:4566
 export AWS_ENDPOINT_URL=http://localhost:4566
 aws s3 mb s3://demo && aws sqs create-queue --queue-name jobs`,
   },
+];
+
+// Every AWS Emulator claim below comes from its documentation
+// (links.awsEmulatorDocs). Keep it factual: only list differences the docs
+// state, and re-check them when the emulator ships notable changes.
+export type ComparisonRow = { topic: string; awsEmulator: string; stratus: string };
+
+export const emulatorComparison: ComparisonRow[] = [
+  {
+    topic: "API coverage",
+    awsEmulator: "Aims to cover every AWS API model, strongest on the control plane",
+    stratus: "33 services, focused on the behaviour integration tests depend on",
+  },
+  {
+    topic: "State",
+    awsEmulator: "Held in memory and cleared when it stops",
+    stratus: "Named snapshots that restore in ~11 ms and fork into parallel jobs",
+  },
+  {
+    topic: "IAM",
+    awsEmulator: "Policies are not evaluated",
+    stratus: "Opt-in enforcement or audit mode for IAM policies",
+  },
+  {
+    topic: "Accounts and regions",
+    awsEmulator: "Any account or region accepted, sharing one set of resources",
+    stratus: "Separate resources for every account and region",
+  },
+  {
+    topic: "Platforms",
+    awsEmulator: "Native Linux packages; a Docker image you build on macOS and Windows",
+    stratus: "One binary for Linux, macOS and Windows",
+  },
+];
+
+export const stratusExtras = [
+  "Real Lambda runtimes",
+  "Real PostgreSQL, MySQL and Valkey",
+  "Kafka via Redpanda",
+  "Seeded chaos and FIS",
+  "MCP server and LLM diagnostics",
+  "stratus ci and a GitHub Action",
+  "SES captured inbox",
+  "Scheduler fast-forward clock",
+  "Bedrock record and replay",
 ];
