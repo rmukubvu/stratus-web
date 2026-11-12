@@ -795,6 +795,112 @@ h3 {
   font-weight: 600;
 }
 
+/* --------------------------------------------------------------- services */
+
+.service-groups {
+  columns: 3;
+  column-gap: 16px;
+}
+
+.service-group {
+  break-inside: avoid;
+  margin-bottom: 16px;
+  padding: 24px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow:
+    inset 0 0 0 1px var(--line),
+    var(--shadow-sm);
+}
+
+.service-group h3 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0 14px;
+  color: var(--teal);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.service-group-count {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--tint);
+  color: var(--muted);
+  font-family: var(--font-mono), monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0;
+}
+
+.service-group ul {
+  display: grid;
+  gap: 12px;
+}
+
+.service-group li + li {
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+}
+
+.service-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.service-name strong {
+  font-size: 0.98rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.service-group li p {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+.badge {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--violet) 9%, transparent);
+  border: 1px solid color-mix(in srgb, var(--violet) 20%, transparent);
+  color: #5b3ec9;
+  font-size: 0.7rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge-docker {
+  background: color-mix(in srgb, var(--sky) 12%, transparent);
+  border-color: color-mix(in srgb, var(--sky) 28%, transparent);
+  color: #2d5fd6;
+}
+
+.services-note {
+  margin-top: 32px;
+  text-align: center;
+}
+
+.services-note .text-link {
+  margin-top: 0;
+}
+
+.link-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+}
+
+.link-row .text-link {
+  margin-top: 8px;
+}
+
 /* ------------------------------------------------------------- endpoints */
 
 .endpoint-list {
@@ -1512,6 +1618,10 @@ h3 {
 /* ------------------------------------------------------------ responsive */
 
 @media (max-width: 1080px) {
+  .service-groups {
+    columns: 2;
+  }
+
   .pillars,
   .steps {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1591,6 +1701,10 @@ h3 {
 
   .stat + .stat {
     border-left: 0;
+  }
+
+  .service-groups {
+    columns: 1;
   }
 
   .stats .stat {

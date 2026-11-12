@@ -10,6 +10,7 @@ import {
   benchmark,
   chaosActions,
   chaosSample,
+  ciFeatures,
   ciSample,
   ciSteps,
   controlEndpoints,
@@ -27,6 +28,7 @@ import {
   stats,
   worksWith,
 } from "@/content/site";
+import { serviceCount, serviceGroups } from "@/content/services";
 
 export default function Home() {
   return (
@@ -36,6 +38,7 @@ export default function Home() {
         <Hero />
         <StatsBand />
         <Pillars />
+        <ServicesSection />
         <ControlSection />
         <CiSection />
         <BenchmarkSection />
@@ -56,9 +59,9 @@ function Hero() {
       <div className="hero-bg" aria-hidden />
       <div className="container hero-grid">
         <div className="hero-copy">
-          <a className="announce" href="#features">
+          <a className="announce" href="#services">
             <span className="announce-tag">New</span>
-            Snapshots, seeded chaos and an MCP server
+            Real RDS, ElastiCache and Kafka, plus Bedrock replay
             <span aria-hidden>→</span>
           </a>
           <h1>
@@ -141,6 +144,45 @@ function Pillars() {
   );
 }
 
+function ServicesSection() {
+  return (
+    <section className="section container" id="services">
+      <SectionHeading kicker="Available services" title={`${serviceCount} AWS services on localhost:4566.`} align="center">
+        Point the AWS CLI, any SDK, CDK or Terraform at Stratus and these just work. Databases, caches and
+        Kafka are the real engines in Docker, so your drivers and clients talk to the real thing.
+      </SectionHeading>
+      <div className="service-groups">
+        {serviceGroups.map((group) => (
+          <div className="service-group" key={group.id}>
+            <h3>
+              {group.title}
+              <span className="service-group-count">{group.services.length}</span>
+            </h3>
+            <ul>
+              {group.services.map((svc) => (
+                <li key={svc.name}>
+                  <div className="service-name">
+                    <strong>{svc.name}</strong>
+                    {svc.backing === "docker" ? <span className="badge badge-docker">Docker</span> : null}
+                    {svc.highlight ? <span className="badge">{svc.highlight}</span> : null}
+                  </div>
+                  <p>{svc.summary}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+      <p className="fine-print services-note">
+        Coverage depth varies by service; the bar is the contract test suite in the repo.{" "}
+        <a className="text-link" href={links.enginesDoc}>
+          How the real engines work →
+        </a>
+      </p>
+    </section>
+  );
+}
+
 function ControlSection() {
   return (
     <section className="section container split" id="control">
@@ -186,24 +228,21 @@ function CiSection() {
           ))}
         </ol>
         <div className="split split-top">
-          <div className="callouts">
-            <div className="callout">
-              <h3>Linux, macOS and Windows</h3>
-              <p>
-                The GitHub Action installs Stratus on all three runners. Everything works without
-                Docker except Lambda execution, which needs Linux containers.
-              </p>
+          <div className="callouts ci-features">
+            {ciFeatures.map((f) => (
+              <div className="callout" key={f.title}>
+                <h3>{f.title}</h3>
+                <p>{f.body}</p>
+              </div>
+            ))}
+            <div className="link-row">
+              <a className="text-link" href={links.ciDoc}>
+                Running Stratus in CI →
+              </a>
+              <a className="text-link" href={links.selfHostedDoc}>
+                Self-hosted runners →
+              </a>
             </div>
-            <div className="callout">
-              <h3>Self-cleaning, even after a crash</h3>
-              <p>
-                Every Lambda container is labelled with the instance, process and host that owns it.
-                On startup Stratus reaps anything a dead process left behind.
-              </p>
-            </div>
-            <a className="text-link" href={links.ciDoc}>
-              Running Stratus in CI →
-            </a>
           </div>
           <CodePanel samples={ciSample} caption="CI" />
         </div>
@@ -415,7 +454,7 @@ function QuickStart() {
       <div>
         <SectionHeading kicker="Quick start" title="Running in under a minute.">
           Point the AWS CLI, any SDK, CDK or Terraform at <code>localhost:4566</code>. One binary, one
-          data directory, and Docker only if you run Lambda functions.
+          data directory, and Docker only for Lambda and the real database, cache and Kafka engines.
         </SectionHeading>
         <div className="hero-actions">
           <a className="btn btn-primary" href={links.repo} target="_blank" rel="noreferrer">
