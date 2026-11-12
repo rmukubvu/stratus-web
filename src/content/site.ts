@@ -1,11 +1,15 @@
 // All marketing copy and code samples for the site live here, so pages stay
 // layout-only and claims can be checked against the Stratus docs in one place.
 
+import { serviceCount } from "./services";
+
 export const links = {
   repo: "https://github.com/rmukubvu/stratus",
   docs: "https://github.com/rmukubvu/stratus/tree/main/docs",
   controlApiDoc: "https://github.com/rmukubvu/stratus/blob/main/docs/control-api.md",
   ciDoc: "https://github.com/rmukubvu/stratus/blob/main/docs/ci.md",
+  selfHostedDoc: "https://github.com/rmukubvu/stratus/blob/main/docs/ci.md#self-hosted-runners",
+  enginesDoc: "https://github.com/rmukubvu/stratus/blob/main/docs/engines.md",
   chaosDoc: "https://github.com/rmukubvu/stratus/blob/main/docs/chaos.md",
   fisDoc: "https://github.com/rmukubvu/stratus/blob/main/docs/fis.md",
   agentsDoc: "https://github.com/rmukubvu/stratus/blob/main/docs/agents.md",
@@ -24,8 +28,8 @@ export type Stat = { value: string; label: string; detail: string };
 export const stats: Stat[] = [
   { value: "89x", label: "faster test isolation", detail: "Snapshot restore vs. re-running setup between tests" },
   { value: "2.2 s", label: "for 200 tests", detail: "Isolation overhead, down from 196 s" },
-  { value: "26", label: "AWS service families", detail: "From S3 and Lambda to Step Functions and RDS" },
-  { value: "1", label: "binary, every OS", detail: "Linux, macOS and Windows. Docker only for Lambda" },
+  { value: String(serviceCount), label: "AWS services", detail: "From S3 and Lambda to real RDS, Kafka and Bedrock replay" },
+  { value: "1", label: "binary, every OS", detail: "Linux, macOS and Windows. Docker only for real engines" },
 ];
 
 export const worksWith = [
@@ -61,7 +65,7 @@ export const pillars: Pillar[] = [
     kicker: "Clean, fast CI",
     title: "Every run gets its own AWS",
     body: "stratus ci starts a private instance on a free port, seeds it, runs your tests and removes everything after, pass or fail.",
-    bullets: ["Seed once, fork many jobs", "Orphaned containers reaped", "GitHub Action on all three OSes"],
+    bullets: ["Seed once, fork many jobs", "Orphaned containers reaped", "GitHub Action, hosted or self-hosted"],
   },
   {
     id: "chaos",
@@ -135,7 +139,36 @@ export const ciSteps = [
   { title: "Fresh instance", body: "Free port, empty data directory, AWS_ENDPOINT_URL set for your command." },
   { title: "Seeded in ms", body: "Start from a seeded snapshot. Each job gets its own hard-linked copy." },
   { title: "Your tests run", body: "The exit code is yours. Infra failures exit 125, so you can tell them apart." },
-  { title: "Nothing left behind", body: "Lambda containers stopped and the data dir deleted, even on Ctrl-C." },
+  { title: "Nothing left behind", body: "Lambda, database and cache containers stopped and the data dir deleted, even on Ctrl-C." },
+];
+
+export type CiFeature = { title: string; body: string };
+
+export const ciFeatures: CiFeature[] = [
+  {
+    title: "An isolated AWS per run",
+    body: "Each run gets its own port, data directory and container names, so parallel jobs never see each other's writes.",
+  },
+  {
+    title: "Seed once, fork many",
+    body: "Start every job from one snapshot. Blobs are hard-linked, and RDS and ElastiCache come up with the rows and keys they held.",
+  },
+  {
+    title: "Infra failures exit 125",
+    body: "The exit code is your command's. If Stratus itself fails to start, you get 125, so a broken setup never looks like a failing test.",
+  },
+  {
+    title: "Self-cleaning, even after a crash",
+    body: "Containers are labelled with the instance, process and host that own them. The next start reaps anything a killed run left behind.",
+  },
+  {
+    title: "GitHub Action, two ways",
+    body: "Wrap one command with run, or start a background instance on a free port for later steps. A post step stops it and removes its containers when the job ends.",
+  },
+  {
+    title: "Hosted and self-hosted runners",
+    body: "Linux, macOS and Windows runners, and persistent self-hosted hosts running several jobs at once. Only Lambda and the real engines need Docker.",
+  },
 ];
 
 export const ciSample: CodeSample[] = [
@@ -154,6 +187,17 @@ export const ciSample: CodeSample[] = [
         with:
           seed: ./fixtures/snapshots/seeded   # optional
           run: go test ./...`,
+  },
+  {
+    label: "Background instance",
+    language: "yaml",
+    code: `steps:
+  - uses: actions/checkout@v4
+  - uses: rmukubvu/stratus@main   # free port, AWS_ENDPOINT_URL exported
+    id: stratus
+  - run: npm test
+  - run: stratus snapshot save after-tests
+  # post step: stops Stratus and removes its containers`,
   },
   {
     label: "Parallel jobs",

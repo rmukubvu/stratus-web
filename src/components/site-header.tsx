@@ -2,6 +2,7 @@ import Link from "next/link";
 import { links } from "@/content/site";
 
 const nav = [
+  { href: "/#services", label: "Services" },
   { href: "/#ci", label: "CI" },
   { href: "/#chaos", label: "Chaos" },
   { href: "/#agents", label: "Agents" },
