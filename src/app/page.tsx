@@ -9,6 +9,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { GitHubIcon, SiteHeader } from "@/components/site-header";
 import {
   benchmark,
+  bootStats,
   chaosActions,
   chaosSample,
   ciFeatures,
@@ -289,6 +290,9 @@ function CiSection() {
               <a className="text-link" href={links.selfHostedDoc}>
                 Self-hosted runners →
               </a>
+              <a className="text-link" href={links.runnersDoc}>
+                Container and Kubernetes runners →
+              </a>
             </div>
           </div>
           <CodePanel samples={ciSample} caption="CI" />
@@ -300,23 +304,45 @@ function CiSection() {
 
 function BenchmarkSection() {
   return (
-    <section className="section container split" id="benchmark">
-      <div>
-        <SectionHeading kicker="Benchmark" title="From 196 seconds to 2.2.">
-          Most integration suites spend their time getting back to a known state, not testing.
-          Restoring a snapshot replaces about 2,000 setup calls per test, which makes isolation{" "}
-          <strong>~89x faster</strong>. Each strategy must restore the exact fixture, so a leaky one
-          fails instead of looking fast.
-        </SectionHeading>
-        <p className="fine-print">
-          4 vCPU Linux container. Fixture: 4 buckets × 100 objects, 3 tables × 500 items, 3 queues × 50
-          messages. CI reruns the benchmark on every push.
+    <section className="section container" id="benchmark">
+      <div className="split">
+        <div>
+          <SectionHeading kicker="Benchmark" title="From 196 seconds to 2.2.">
+            Most integration suites spend their time getting back to a known state, not testing.
+            Restoring a snapshot replaces about 2,000 setup calls per test, which makes isolation{" "}
+            <strong>~89x faster</strong>. Each strategy must restore the exact fixture, so a leaky one
+            fails instead of looking fast.
+          </SectionHeading>
+          <p className="fine-print">
+            4 vCPU Linux container. Fixture: 4 buckets × 100 objects, 3 tables × 500 items, 3 queues × 50
+            messages. CI reruns the benchmark on every push.
+          </p>
+          <a className="text-link" href={links.benchmarkDoc}>
+            Methodology and raw numbers →
+          </a>
+        </div>
+        <BenchmarkChart rows={benchmark} />
+      </div>
+      <div className="boot">
+        <h3>Cold boot on a fresh runner</h3>
+        <p>
+          A new microVM or ephemeral pod starts with nothing running. Stratus goes from a fresh process to
+          serving a restored snapshot in milliseconds, so the VM and Docker daemon set your start-up time,
+          not Stratus.
         </p>
-        <a className="text-link" href={links.benchmarkDoc}>
-          Methodology and raw numbers →
+        <div className="stats stats-3">
+          {bootStats.map((s) => (
+            <div className="stat" key={s.label}>
+              <strong>{s.value}</strong>
+              <span className="stat-label">{s.label}</span>
+              <span className="stat-detail">{s.detail}</span>
+            </div>
+          ))}
+        </div>
+        <a className="text-link" href={links.bootBenchmarkDoc}>
+          Cold boot methodology →
         </a>
       </div>
-      <BenchmarkChart rows={benchmark} />
     </section>
   );
 }
