@@ -615,6 +615,32 @@ h3 {
   line-height: 1.5;
 }
 
+.boot {
+  margin-top: 72px;
+}
+
+.boot h3 {
+  font-family: var(--font-display), sans-serif;
+  font-size: 1.3rem;
+}
+
+.boot > p {
+  margin-top: 8px;
+  max-width: 64ch;
+  color: var(--muted);
+}
+
+.boot .stats {
+  margin-top: 24px;
+  margin-bottom: 16px;
+}
+
+@media (min-width: 1081px) {
+  .stats-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 /* --------------------------------------------------------------- sections */
 
 .section {

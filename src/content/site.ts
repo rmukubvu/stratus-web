@@ -9,6 +9,8 @@ export const links = {
   controlApiDoc: "https://github.com/rmukubvu/stratus/blob/main/docs/control-api.md",
   ciDoc: "https://github.com/rmukubvu/stratus/blob/main/docs/ci.md",
   selfHostedDoc: "https://github.com/rmukubvu/stratus/blob/main/docs/ci.md#self-hosted-runners",
+  runnersDoc: "https://github.com/rmukubvu/stratus/blob/main/docs/ci.md#runners-in-containers-and-kubernetes",
+  bootBenchmarkDoc: "https://github.com/rmukubvu/stratus/blob/main/docs/benchmark.md#cold-boot-benchmark",
   enginesDoc: "https://github.com/rmukubvu/stratus/blob/main/docs/engines.md",
   chaosDoc: "https://github.com/rmukubvu/stratus/blob/main/docs/chaos.md",
   fisDoc: "https://github.com/rmukubvu/stratus/blob/main/docs/fis.md",
@@ -168,8 +170,8 @@ export const ciFeatures: CiFeature[] = [
     body: "Wrap one command with run, or start a background instance on a free port for later steps. A post step stops it and removes its containers when the job ends.",
   },
   {
-    title: "Hosted and self-hosted runners",
-    body: "Linux, macOS and Windows runners, and persistent self-hosted hosts running several jobs at once. Only Lambda and the real engines need Docker.",
+    title: "Any runner fleet",
+    body: "Hosted runners on Linux, macOS and Windows, persistent self-hosted hosts, microVM fleets, GitHub container jobs and Kubernetes pods that share the host's Docker socket. Stratus works out how to reach its containers itself; Kubernetes pods on the node's socket need one setting.",
   },
 ];
 
@@ -214,6 +216,15 @@ stratus ci --seed ./fixtures/snapshots/seeded -- go test ./orders/...   &
 stratus ci --seed ./fixtures/snapshots/seeded -- go test ./payments/... &
 wait`,
   },
+];
+
+// Cold boot: a fresh stratus process seeded from a snapshot, as on a new
+// microVM or ephemeral runner. From docs/benchmark.md#cold-boot-benchmark
+// (4 vCPU Linux container, 10 boots, medians).
+export const bootStats: Stat[] = [
+  { value: "12 ms", label: "to ready", detail: "A fresh process, from start to serving requests" },
+  { value: "32 ms", label: "to a seeded fixture", detail: "Snapshot restored: S3 objects, DynamoDB items, SQS messages" },
+  { value: "0.85 s", label: "with real PostgreSQL", detail: "Including an RDS instance restored from the snapshot" },
 ];
 
 export type BenchmarkRow = { strategy: string; medianMs: number; total: string; speedup: string; highlight?: boolean };
