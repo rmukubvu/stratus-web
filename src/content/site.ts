@@ -171,7 +171,7 @@ export const ciFeatures: CiFeature[] = [
   },
   {
     title: "Any runner fleet",
-    body: "Hosted runners on Linux, macOS and Windows, persistent self-hosted hosts, microVM fleets, GitHub container jobs and Kubernetes pods that share the host's Docker socket. Stratus works out how to reach its containers on its own.",
+    body: "Hosted runners on Linux, macOS and Windows, persistent self-hosted hosts, microVM fleets, GitHub container jobs and Kubernetes pods that share the host's Docker socket. Stratus works out how to reach its containers itself; Kubernetes pods on the node's socket need one setting.",
   },
 ];
 
