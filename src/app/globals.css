@@ -2133,3 +2133,9 @@ h3 {
     font-size: 0.8rem;
   }
 }
+
+/* ------------------------------------------------------- coverage section */
+
+.catalogue-stats {
+  margin-top: 40px;
+}

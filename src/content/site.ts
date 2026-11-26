@@ -1,6 +1,7 @@
 // All marketing copy and code samples for the site live here, so pages stay
 // layout-only and claims can be checked against the Stratus docs in one place.
 
+import { coverageFraction, operationCoverage } from "./coverage";
 import { serviceCount } from "./services";
 
 export const links = {
@@ -22,10 +23,17 @@ export const links = {
   npmPackage: "https://www.npmjs.com/package/stratus-emulator",
   pypiPackage: "https://pypi.org/project/stratus-emulator/",
   iamDoc: "https://github.com/rmukubvu/stratus/blob/main/docs/iam.md",
+  catalogueDoc: "https://github.com/rmukubvu/stratus/blob/main/docs/operation-catalogue.md",
+  coverageDoc: "https://github.com/rmukubvu/stratus/blob/main/docs/coverage/README.md",
+  clockDoc: "https://github.com/rmukubvu/stratus/blob/main/docs/clock.md",
+  idleTimeoutDoc: "https://github.com/rmukubvu/stratus/blob/main/docs/ci.md#stop-a-forgotten-server-by-itself",
   awsEmulatorDocs: "https://docs.aws.amazon.com/emulator/",
   preflightRepo: "https://github.com/rmukubvu/preflight",
   kanu: "https://www.getkanu.com/",
 } as const;
+
+/** The "New" link at the top of the hero. */
+export const announcement = { text: "stratus check and an emulator clock", href: "#check" };
 
 export type Stat = { value: string; label: string; detail: string };
 
@@ -170,6 +178,10 @@ export const ciFeatures: CiFeature[] = [
     body: "Wrap one command with run, or start a background instance on a free port for later steps. A post step stops it and removes its containers when the job ends.",
   },
   {
+    title: "Forgotten servers stop themselves",
+    body: "Start stratus serve with --idle-timeout 30m and, once nothing has called it for that long, it shuts down and removes its containers. Health probes don't count as use.",
+  },
+  {
     title: "Any runner fleet",
     body: "Hosted runners on Linux, macOS and Windows, persistent self-hosted hosts, microVM fleets, GitHub container jobs and Kubernetes pods that share the host's Docker socket. Stratus works out how to reach its containers itself; Kubernetes pods on the node's socket need one setting.",
   },
@@ -280,6 +292,9 @@ export const mcpTools = [
   "stratus_snapshot_restore",
   "stratus_chaos_start",
   "stratus_chaos_stop",
+  "stratus_clock_advance",
+  "stratus_check",
+  "stratus_coverage",
 ];
 
 export const mcpInstall = "claude mcp add stratus -- stratus mcp --start";
@@ -359,7 +374,7 @@ export const emulatorComparison: ComparisonRow[] = [
   {
     topic: "API coverage",
     awsEmulator: "Aims to cover every AWS API model, strongest on the control plane",
-    stratus: "33 services, focused on the behaviour integration tests depend on",
+    stratus: `${serviceCount} services, focused on behaviour; ${coverageFraction()} of their operations, the rest answer 501`,
   },
   {
     topic: "State",
@@ -391,6 +406,148 @@ export const stratusExtras = [
   "MCP server and LLM diagnostics",
   "stratus ci and a GitHub Action",
   "SES captured inbox",
-  "Scheduler fast-forward clock",
+  "An emulator clock tests can advance",
+  "stratus check before you run",
   "Bedrock record and replay",
+];
+
+// Operation catalogue, coverage and `stratus check`, from
+// docs/operation-catalogue.md. The check output below is a real run, with
+// its two long lines wrapped to fit the panel.
+export const catalogueStats: Stat[] = [
+  {
+    value: coverageFraction(),
+    label: "AWS operations implemented",
+    detail: "Across the services Stratus emulates, measured by sending every operation once",
+  },
+  {
+    value: "501",
+    label: "for everything else",
+    detail: "An operation Stratus lacks says NotImplemented. Never an empty success a test can't tell apart",
+  },
+  {
+    value: operationCoverage.botocoreVersion,
+    label: "botocore models",
+    detail: "The catalogue is generated from the service models AWS ships with botocore",
+  },
+];
+
+export const catalogueFeatures: CiFeature[] = [
+  {
+    title: "stratus check, before you run anything",
+    body: "Scans Python (boto3), JavaScript (SDK v3) and Go (SDK v2) source for the AWS calls it makes, and lists the ones Stratus would answer with 501, with file and line. It exits 1 when anything would fail, so it can gate a CI job.",
+  },
+  {
+    title: "AWS's own validation errors",
+    body: "Requests that break the model's constraints, such as a missing member, a value too long or outside its enum, get the ValidationException AWS sends. On by default for ten JSON-protocol services; --validation off turns it off.",
+  },
+  {
+    title: "Coverage, per service",
+    body: "A generated page lists every operation AWS defines for each service and whether Stratus implements it. CI fails if the page and the code disagree.",
+  },
+  {
+    title: "Agents ask first",
+    body: "stratus_check runs the same scan over MCP, and stratus_coverage answers \"does Stratus implement sqs AddPermission?\" from the catalogue, without a running Stratus.",
+  },
+];
+
+export const checkSample: CodeSample[] = [
+  {
+    label: "stratus check",
+    language: "text",
+    copyText: "stratus check .",
+    code: `$ stratus check .
+# Stratus check
+
+Scanned 1 files under .: 6 AWS operations called,
+4 implemented by Stratus.
+
+## Not implemented
+
+AWS has these operations; Stratus answers 501
+NotImplemented. Tests that call them will fail.
+
+- \`dynamodb ExecuteStatement\` at orders/worker.py:11
+- \`sqs AddPermission\` at orders/worker.py:10
+
+## Implemented
+
+- \`dynamodb PutItem\` at orders/worker.py:9
+- \`sns Publish\` at orders/worker.py:12
+- \`sqs DeleteMessage\` at orders/worker.py:13
+- \`sqs ReceiveMessage\` at orders/worker.py:8
+
+exit 1`,
+  },
+  {
+    label: "CI gate",
+    language: "yaml",
+    code: `steps:
+  - uses: actions/checkout@v4
+  - uses: rmukubvu/stratus@main   # installs stratus, puts it on PATH
+  - run: stratus check .          # fails on any call Stratus answers 501 for
+  - run: npm test`,
+  },
+  {
+    label: "Validation",
+    language: "sh",
+    code: `aws kms create-key --key-spec AES_512
+
+# The error AWS itself sends for that input
+An error occurred (ValidationException) when calling the CreateKey
+operation: 1 validation error detected:
+Value 'AES_512' at 'keySpec' failed to satisfy constraint:
+Member must satisfy enum value set: [AES_256, AES_128]`,
+  },
+];
+
+// The emulator clock, from docs/clock.md.
+export const clockCrossings = [
+  "SQS visibility timeouts and delays",
+  "DynamoDB TTL expiry",
+  "CloudWatch alarm periods",
+  "S3 Object Lock retention",
+  "EventBridge schedules",
+  "Every recorded timestamp",
+];
+
+export const clockEndpoints = [
+  { method: "GET", path: "/clock", note: "now, offset and whether it is frozen" },
+  { method: "POST", path: "/clock/advance", note: "By a duration, or to a time" },
+  { method: "POST", path: "/clock/freeze", note: "Hold it for stable timestamps" },
+  { method: "POST", path: "/clock/resume", note: "Run again from where it was held" },
+];
+
+export const clockSample: CodeSample[] = [
+  {
+    label: "CLI",
+    language: "sh",
+    code: `aws sqs receive-message --queue-url "$QUEUE" --visibility-timeout 300
+stratus clock advance 5m1s       # no sleep
+aws sqs receive-message --queue-url "$QUEUE"   # the message is back
+
+stratus clock advance 36h        # due schedules fire, TTLs expire
+stratus clock freeze             # every timestamp holds still
+stratus clock resume`,
+  },
+  {
+    label: "TypeScript",
+    language: "ts",
+    code: `import { StratusClient } from "stratus-emulator";
+
+const stratus = new StratusClient();
+
+// Cross a five-minute visibility timeout in one call
+await stratus.clock.advance("5m");`,
+  },
+  {
+    label: "Python",
+    language: "python",
+    code: `from stratus_emulator import StratusClient
+
+stratus = StratusClient()
+
+# Expire DynamoDB TTLs without waiting a day
+stratus.clock.advance("24h")`,
+  },
 ];

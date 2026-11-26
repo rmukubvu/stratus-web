@@ -8,13 +8,20 @@ import { SectionHeading } from "@/components/section-heading";
 import { SiteFooter } from "@/components/site-footer";
 import { GitHubIcon, SiteHeader } from "@/components/site-header";
 import {
+  announcement,
   benchmark,
   bootStats,
+  catalogueFeatures,
+  catalogueStats,
   chaosActions,
   chaosSample,
   ciFeatures,
   ciSample,
   ciSteps,
+  checkSample,
+  clockCrossings,
+  clockEndpoints,
+  clockSample,
   controlEndpoints,
   controlSample,
   demoSteps,
@@ -44,7 +51,9 @@ export default function Home() {
         <Pillars />
         <ServicesSection />
         <AwsEmulatorSection />
+        <CheckSection />
         <ControlSection />
+        <ClockSection />
         <CiSection />
         <BenchmarkSection />
         <ChaosSection />
@@ -64,9 +73,9 @@ function Hero() {
       <div className="hero-bg" aria-hidden />
       <div className="container hero-grid">
         <div className="hero-copy">
-          <a className="announce" href="#sdks">
+          <a className="announce" href={announcement.href}>
             <span className="announce-tag">New</span>
-            SDKs now on npm and PyPI
+            {announcement.text}
             <span aria-hidden>→</span>
           </a>
           <h1>
@@ -231,6 +240,46 @@ function AwsEmulatorSection() {
   );
 }
 
+function CheckSection() {
+  return (
+    <section className="section container" id="check">
+      <SectionHeading kicker="Coverage and stratus check" title="Know what will work before you run it." align="center">
+        Stratus carries a catalogue of every operation AWS defines for the services it emulates, built from
+        AWS&apos;s own service models. It says exactly which ones Stratus implements, checks your code
+        against them, and validates requests the way AWS does.
+      </SectionHeading>
+      <div className="stats stats-3 catalogue-stats">
+        {catalogueStats.map((s) => (
+          <div className="stat" key={s.label}>
+            <strong>{s.value}</strong>
+            <span className="stat-label">{s.label}</span>
+            <span className="stat-detail">{s.detail}</span>
+          </div>
+        ))}
+      </div>
+      <div className="split split-top">
+        <div className="callouts">
+          {catalogueFeatures.map((f) => (
+            <div className="callout" key={f.title}>
+              <h3>{f.title}</h3>
+              <p>{f.body}</p>
+            </div>
+          ))}
+          <div className="link-row">
+            <a className="text-link" href={links.catalogueDoc}>
+              Catalogue, check and validation →
+            </a>
+            <a className="text-link" href={links.coverageDoc}>
+              Coverage by service →
+            </a>
+          </div>
+        </div>
+        <CodePanel samples={checkSample} caption="stratus check" />
+      </div>
+    </section>
+  );
+}
+
 function ControlSection() {
   return (
     <section className="section container split" id="control">
@@ -254,6 +303,41 @@ function ControlSection() {
         </a>
       </div>
       <CodePanel samples={controlSample} caption="Control API" />
+    </section>
+  );
+}
+
+function ClockSection() {
+  return (
+    <section className="section container split" id="clock">
+      <div>
+        <SectionHeading kicker="Emulator clock" title="Advance time instead of sleeping.">
+          Every service reads time from one clock. It runs in real time until a test moves it, so a test
+          crosses a five-minute timeout or a day-long TTL in one call. Freeze it for timestamps that never
+          change between runs. Snapshots capture it, and a full reset returns it to real time.
+        </SectionHeading>
+        <div className="chip-group">
+          <span className="chip-title">One advance crosses</span>
+          <ul className="chips chips-light">
+            {clockCrossings.map((c) => (
+              <li key={c}>{c}</li>
+            ))}
+          </ul>
+        </div>
+        <ul className="endpoint-list">
+          {clockEndpoints.map((e) => (
+            <li key={e.path}>
+              <span className={`method method-${e.method.toLowerCase()}`}>{e.method}</span>
+              <code>{e.path}</code>
+              <span className="endpoint-note">{e.note}</span>
+            </li>
+          ))}
+        </ul>
+        <a className="text-link" href={links.clockDoc}>
+          How the clock works →
+        </a>
+      </div>
+      <CodePanel samples={clockSample} caption="Emulator clock" />
     </section>
   );
 }
@@ -292,6 +376,9 @@ function CiSection() {
               </a>
               <a className="text-link" href={links.runnersDoc}>
                 Container and Kubernetes runners →
+              </a>
+              <a className="text-link" href={links.idleTimeoutDoc}>
+                Idle timeout →
               </a>
             </div>
           </div>
