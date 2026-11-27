@@ -2,7 +2,7 @@
 // GoReleaser asset naming in the Stratus repo (.goreleaser.yaml), so bumping
 // `stratusVersion` after a release is the only edit a new version needs.
 
-export const stratusVersion = "0.2.0";
+export const stratusVersion = "0.5.1";
 
 export type ReleaseOs = "Darwin" | "Linux" | "Windows";
 export type ReleaseArch = "x86_64" | "arm64";

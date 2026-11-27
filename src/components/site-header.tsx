@@ -5,6 +5,7 @@ const nav = [
   { href: "/get-started", label: "Get started" },
   { href: "/#services", label: "Services" },
   { href: "/#aws-emulator", label: "vs AWS Emulator" },
+  { href: "/#check", label: "Coverage" },
   { href: "/#ci", label: "CI" },
   { href: "/#chaos", label: "Chaos" },
   { href: "/#agents", label: "Agents" },
