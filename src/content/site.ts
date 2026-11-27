@@ -33,7 +33,7 @@ export const links = {
 } as const;
 
 /** The "New" link at the top of the hero. */
-export const announcement = { text: "stratus check and an emulator clock", href: "#check" };
+export const announcement = { text: "stratus advise: architecture decisions you can prove", href: "#advise" };
 
 export type Stat = { value: string; label: string; detail: string };
 
@@ -295,6 +295,8 @@ export const mcpTools = [
   "stratus_clock_advance",
   "stratus_check",
   "stratus_coverage",
+  "stratus_advise_assess",
+  "stratus_advise_terraform",
 ];
 
 export const mcpInstall = "claude mcp add stratus -- stratus mcp --start";
@@ -408,6 +410,7 @@ export const stratusExtras = [
   "SES captured inbox",
   "An emulator clock tests can advance",
   "stratus check before you run",
+  "Guided architecture decisions (ADRs)",
   "Bedrock record and replay",
 ];
 

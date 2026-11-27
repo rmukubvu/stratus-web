@@ -38,6 +38,17 @@ import {
   stratusExtras,
   worksWith,
 } from "@/content/site";
+import {
+  adviseDoc,
+  adviseExample,
+  adviseFeatures,
+  adviseSample,
+  adviseStats,
+  adviseSteps,
+  proofRuns,
+  proofScenario,
+  rejectedPercent,
+} from "@/content/advise";
 import { quickstartSamples } from "@/content/guide";
 import { serviceCount, serviceGroups } from "@/content/services";
 
@@ -52,6 +63,7 @@ export default function Home() {
         <ServicesSection />
         <AwsEmulatorSection />
         <CheckSection />
+        <AdviseSection />
         <ControlSection />
         <ClockSection />
         <CiSection />
@@ -277,6 +289,100 @@ function CheckSection() {
         <CodePanel samples={checkSample} caption="stratus check" />
       </div>
     </section>
+  );
+}
+
+function AdviseSection() {
+  return (
+    <section className="section section-tint" id="advise">
+      <div className="container">
+        <SectionHeading kicker="Architecture decisions" title="Pick the right AWS service, then prove it." align="center">
+          <code>stratus advise</code> asks about your workload, rules out the options that cannot meet a hard
+          requirement, checks the rest against AWS&apos;s regional quotas, prices them, proves them under load and
+          writes the decision down as an ADR, with Terraform that has already been deployed once.
+        </SectionHeading>
+        <ol className="steps">
+          {adviseSteps.map((s, i) => (
+            <li key={s.title}>
+              <span className="step-num">{String(i + 1).padStart(2, "0")}</span>
+              <h3>{s.title}</h3>
+              <p>{s.body}</p>
+            </li>
+          ))}
+        </ol>
+        <div className="stats stats-3 catalogue-stats">
+          {adviseStats.map((s) => (
+            <div className="stat" key={s.label}>
+              <strong>{s.value}</strong>
+              <span className="stat-label">{s.label}</span>
+              <span className="stat-detail">{s.detail}</span>
+            </div>
+          ))}
+        </div>
+        <ProofTable />
+        <div className="split split-top">
+          <div className="callouts">
+            {adviseFeatures.map((f) => (
+              <div className="callout" key={f.title}>
+                <h3>{f.title}</h3>
+                <p>{f.body}</p>
+              </div>
+            ))}
+            <div className="link-row">
+              <a className="text-link" href={adviseDoc}>
+                How stratus advise works →
+              </a>
+              <a className="text-link" href={adviseExample}>
+                A complete example ADR →
+              </a>
+            </div>
+          </div>
+          <CodePanel samples={adviseSample} caption="stratus advise" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ProofTable() {
+  const { peakPerSecond, region, snsPublishQuota } = proofScenario;
+  return (
+    <figure className="proof">
+      <figcaption>
+        <strong>A real proof:</strong> {peakPerSecond} messages/s in {region}, where SNS&apos;s default is{" "}
+        {snsPublishQuota} published messages a second. The rules flagged it as a caveat; the proof shows what the
+        publisher sees.
+      </figcaption>
+      <div className="proof-table" role="table" aria-label="Load proof results">
+        <div className="proof-row proof-head" role="row">
+          <span role="columnheader">Option</span>
+          <span role="columnheader">Verdict</span>
+          <span role="columnheader">Ran / target</span>
+          <span role="columnheader">Rejected</span>
+          <span role="columnheader">p99</span>
+        </div>
+        {proofRuns.map((r) => (
+          <div className="proof-row" role="row" key={r.option}>
+            <span role="rowheader" className="proof-option">
+              {r.option}
+            </span>
+            <span role="cell" data-label="Verdict">
+              <span className={`proof-verdict proof-${r.verdict}`}>{r.verdict}</span>
+              {r.throttledBy ? <code className="proof-cause">{r.throttledBy}</code> : null}
+            </span>
+            <span role="cell" data-label="Ran / target">
+              {r.ranPerSecond} / {r.targetPerSecond} per s
+            </span>
+            <span role="cell" data-label="Rejected">
+              {r.throttled + r.errors} of {r.requests.toLocaleString("en-US")} ({rejectedPercent(r)}%)
+            </span>
+            <span role="cell" data-label="p99">
+              {r.p99Ms} ms
+            </span>
+          </div>
+        ))}
+      </div>
+    </figure>
   );
 }
 
